@@ -1,6 +1,4 @@
-<h1>New product</h1>
-
-<%= form_with model: @product do |form| %> 
+<%= form_with model: @product, multipart: true do |form| %>
   <%= render "form", product: @product %>
   <%= link_to "Cancel", products_path %>
 <% end %>
