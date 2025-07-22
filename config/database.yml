@@ -1,27 +1,20 @@
 # config/database.yml
 
-# This 'default' block defines settings that other environments can inherit.
-# If you are using sqlite3 locally for development, keep this as sqlite3.
 default: &default
   adapter: sqlite3 # This is for your local dev setup (if you use SQLite)
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
-# Development environment settings
 development:
   <<: *default
   database: storage/development.sqlite3
 
-# Test environment settings
 test:
   <<: *default
   database: storage/test.sqlite3
 
-# PRODUCTION ENVIRONMENT SETTINGS - THIS IS THE CRITICAL PART FOR RENDER
 production:
-  # Do NOT inherit from `*default` if your default is sqlite3 and your production is postgresql.
-  # Explicitly define the adapter and URL for production.
-  adapter: postgresql       # <--- MUST BE postgresql
-  url: <%= ENV["DATABASE_URL"] %> # <--- MUST reference the ENV var
+  adapter: postgresql       # <--- THIS LINE NEEDS TO BE INDENTED 2 SPACES FROM 'production:'
+  url: <%= ENV["DATABASE_URL"] %> # <--- THIS LINE NEEDS TO BE INDENTED 2 SPACES FROM 'production:'
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
