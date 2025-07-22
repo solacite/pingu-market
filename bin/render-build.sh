@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -o errexit
+chmod +x bin/rails
 
 bundle install
 bin/rails assets:precompile
