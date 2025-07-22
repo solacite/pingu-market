@@ -7,8 +7,5 @@ bundle install
 bin/rails assets:precompile
 bin/rails assets:clean
 
-bin/rails db:migrate
-
-echo "--> Running database seeds"
-bin/rails db:seed
+bin/rails db:reset
 bin/rails assets:precompile
