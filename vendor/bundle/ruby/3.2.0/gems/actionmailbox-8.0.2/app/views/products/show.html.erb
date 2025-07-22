@@ -1,4 +1,9 @@
-<h1><%= @product.name %></h1>
+<h1>Products</h1>
 
-<%= @product.description %>
-<%= link_to "Back", products_path %>
+<div id="products">
+  <% @products.each do |product| %>
+    <div>
+      <%= link_to product.name, product %>
+    </div>
+  <% end %>
+</div>

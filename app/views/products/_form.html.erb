@@ -1,32 +1,10 @@
 <%= form_with model: product do |form| %>
   <div>
     <%= form.label :name %>
-       <%= form.text_field :name %>
-    </div>
-
-    <div>
-        <%= form.label :description, style: "display: block" %>
-        <%= form.rich_text_area :description %>
-    </div>
-
-    <div>
-        <%= form.label :inventory_count, style: "display: block" %>
-        <%= form.number_field :inventory_count %>
-    </div>
-
-    <div>
-        <%= form.submit %>
-    </div>
-<% end %>
-
-
-
-<h1>New product</h1>
-
-<%= render "form", product: @product %>
-<%= link_to "Cancel", products_path %>
-
-<div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.rich_text_area :description %>
+    <%= form.text_field :name %>
   </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
