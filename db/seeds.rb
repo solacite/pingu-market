@@ -8,12 +8,12 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-unless User.find_by(email: "admin@example.com")
+unless User.find_by(email: "admin@gmail.com")
   User.create!(
     email: "admin@gmail.com",
-    password: "banana", # Choose a strong password for real production!
+    password: "banana",
     password_confirmation: "banana",
-    admin: true # If you have an admin flag
+    admin: true
   )
-  puts "Created admin@example.com"
+  puts "Created admin@gmail.com"
 end
