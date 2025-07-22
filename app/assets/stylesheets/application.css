@@ -9,6 +9,8 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+@import "actiontext";
+
 html {
     color:#0ca91c;
 }
@@ -70,4 +72,20 @@ section.product img {
 body {
   font-family: 'Anonymous Pro', monospace;
   letter-spacing: 2px;
+}
+
+a:link {
+  color: #00aaff;
+}
+
+a:visited {
+  color: #0ca91c;
+}
+
+a:hover {
+  color: #00aaff;
+}
+
+a:active {
+  color: #00aaff;
 }

@@ -1,4 +1,5 @@
 import { Application } from "@hotwired/stimulus"
+import "@rails/actiontext"
 
 const application = Application.start()
 
