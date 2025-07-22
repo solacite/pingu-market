@@ -1,41 +1,27 @@
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
-#
+# config/database.yml
+
+# This 'default' block defines settings that other environments can inherit.
+# If you are using sqlite3 locally for development, keep this as sqlite3.
 default: &default
-  adapter: sqlite3
+  adapter: sqlite3 # This is for your local dev setup (if you use SQLite)
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
+# Development environment settings
 development:
   <<: *default
   database: storage/development.sqlite3
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
+# Test environment settings
 test:
   <<: *default
   database: storage/test.sqlite3
 
-
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
+# PRODUCTION ENVIRONMENT SETTINGS - THIS IS THE CRITICAL PART FOR RENDER
 production:
-  primary:
-    <<: *default
-    database: storage/production.sqlite3
-  cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
+  # Do NOT inherit from `*default` if your default is sqlite3 and your production is postgresql.
+  # Explicitly define the adapter and URL for production.
+  adapter: postgresql       # <--- MUST BE postgresql
+  url: <%= ENV["DATABASE_URL"] %> # <--- MUST reference the ENV var
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
