@@ -1,3 +1,5 @@
+puts "DEBUG: === application.rb file started loading ==="
+
 require_relative "boot"
 
 require "rails/all"
