@@ -12,12 +12,10 @@
     <%= render "inventory", product: @product %>
 
   <%# Buy button %>
-  <% if authenticated? && @product.in_stock? %>
+  <% if @product.in_stock? %>
     <%= button_to "Buy Now", buy_product_path(@product), method: :post, class: "btn btn-primary" %>
-  <% elsif authenticated? && !@product.in_stock? %>
-    <p style="color: red;">Out of Stock!</p>
   <% else %>
-    <p>Log in to purchase this product.</p>
+    <p style="color: red;">Out of Stock!</p>
   <% end %>
 
     <% if authenticated? %>
