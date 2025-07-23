@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+hey! welcome to the pingu marketplace.
 
-Things you may want to cover:
+guess the email and password, maybe? (pls don't)
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+hop around and check out the different pingus available. maybe you want to bring one home?
