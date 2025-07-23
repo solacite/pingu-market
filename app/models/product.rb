@@ -2,7 +2,7 @@ class Product < ApplicationRecord
   include Notifications
 
   has_many :subscribers, dependent: :destroy
-  has_many :orders
+  has_many :orders, dependent: :destroy
   has_one_attached :featured_image
   has_rich_text :description
 
