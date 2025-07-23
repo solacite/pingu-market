@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy ]
+  before_action :set_product, only: %i[ show edit update destroy buy ]
   allow_unauthenticated_access only: %i[ index show ]
 
   def index
@@ -24,12 +24,14 @@ class ProductsController < ApplicationController
     end
 
     if @product.in_stock?
-      @order = current_user.orders.new(
+      @order = Order.new(
         product: @product,
         quantity: 1,
         total_price: @product.price,
         status: 'completed'
       )
+      
+      @order.user = current_user if user_signed_in?
 
       if @order.save
         redirect_to @order, notice: 'Purchase successful! Your order has been placed.'
