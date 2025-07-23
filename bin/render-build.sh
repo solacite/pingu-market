@@ -15,6 +15,11 @@ bin/rails db:create
 echo "--> Loading database schema from schema.rb"
 bin/rails db:schema:load
 
+echo "--> Waiting 5 seconds for database changes to propagate..."
+sleep 5
+echo "--> Clearing Rails cache before seeding..."
+bin/rails tmp:clear
+
 echo "--> Running database seeds"
 bin/rails db:seed
 
