@@ -1,3 +1,5 @@
+# config/puma.rb
+
 # This configuration file will be evaluated by Puma. The top-level methods that
 # are invoked here are part of Puma's configuration DSL. For more information
 # about methods provided by the DSL, see https://puma.io/puma/Puma/DSL.html.
@@ -39,3 +41,37 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+# Specifies the number of `workers` to boot in clustered mode.
+# Workers are forked from the master process after it has loaded the app.
+# This makes Puma more resilient to memory leaks and allows for zero-downtime deploys.
+# Render automatically sets WEB_CONCURRENCY for you (usually to the CPU count).
+workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render suggests otherwise
+
+# Use the `preload_app!` directive to load your application before workers are forked.
+# This results in faster worker boot times and reduced memory consumption on platforms
+# like Render.
+preload_app!
+
+# The `on_worker_boot` hook is called every time a worker process is booted.
+# It's crucial for re-establishing connections and configurations that might
+# not be inherited correctly after forking, like database connections or Cloudinary settings.
+on_worker_boot do
+  # Reconnect to the database if using ActiveRecord.
+  # This is standard practice when using `preload_app!`.
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+
+  # --- IMPORTANT: Re-configure Cloudinary for each worker ---
+  # This ensures that each forked worker process has the Cloudinary configuration
+  # properly set, as environment variables might not be fully available or
+  # Cloudinary's global state might not be inherited correctly after forking.
+  Cloudinary.config do |cloudinary_config|
+    puts "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
+    cloudinary_config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
+    cloudinary_config.api_key    = ENV['CLOUDINARY_API_KEY']
+    cloudinary_config.api_secret = ENV['CLOUDINARY_API_SECRET']
+    cloudinary_config.secure     = true
+    cloudinary_config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
+  end
+  puts "DEBUG: === Finished re-configuring Cloudinary in on_worker_boot ==="
+end
