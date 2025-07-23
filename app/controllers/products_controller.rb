@@ -39,7 +39,7 @@ class ProductsController < ApplicationController
         @product.decrement!(:inventory_count)
         Rails.logger.debug "DEBUG: Inventory updated! New count for Product ID #{@product.id}: #{@product.inventory_count}"
 
-        redirect_to @order, notice: 'Purchase successful! Your order has been placed.'
+        redirect_to @product, notice: 'Purchase successful! Your order has been placed.' and return
       else
         Rails.logger.error "Order save failed for product ID #{params[:id]}: #{@order.errors.full_messages.join(', ')}"
         redirect_to @product, alert: "Could not complete purchase due to order error: #{@order.errors.full_messages.join(', ')}. Please try again."
