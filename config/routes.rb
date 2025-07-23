@@ -15,6 +15,11 @@ Rails.application.routes.draw do
     resource :unsubscribe, only: [ :show ]
   end
 
+  resources :products do
+    member do
+      post :buy
+    end
+  end
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

@@ -14,6 +14,25 @@ class ProductsController < ApplicationController
     @product = Product.new
   end
 
+  def buy
+    if @product.in_stock?
+      @order = current_user.orders.new(
+        product: @product,
+        quantity: 1,
+        total_price: @product.price,
+        status: 'completed'
+      )
+
+      if @order.save
+        redirect_to @order, notice: 'Purchase successful! Your order has been placed.'
+      else
+        redirect_to @product, alert: 'Could not complete purchase. Please try again.'
+      end
+    else
+      redirect_to @product, alert: 'Sorry, this product is out of stock.'
+    end
+  end
+
   def create
     @product = Product.new(product_params)
     if @product.save

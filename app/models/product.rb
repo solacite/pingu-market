@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   include Notifications
 
   has_many :subscribers, dependent: :destroy
+  has_many :orders
   has_one_attached :featured_image
   has_rich_text :description
 
@@ -18,5 +19,9 @@ class Product < ApplicationRecord
     subscribers.each do |subscriber|
       ProductMailer.with(product: self, subscriber: subscriber).in_stock.deliver_later
     end
+  end
+
+  def in_stock?
+    inventory_count.to_i > 0
   end
 end

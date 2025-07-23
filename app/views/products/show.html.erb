@@ -11,6 +11,15 @@
 
     <%= render "inventory", product: @product %>
 
+  <%# Buy button %>
+  <% if authenticated? && @product.in_stock? %>
+    <%= button_to "Buy Now", buy_product_path(@product), method: :post, class: "btn btn-primary" %>
+  <% elsif authenticated? && !@product.in_stock? %>
+    <p style="color: red;">Out of Stock!</p>
+  <% else %>
+    <p>Log in to purchase this product.</p>
+  <% end %>
+
     <% if authenticated? %>
       <%= link_to "Edit", edit_product_path(@product) %>
       <%= button_to "Delete", @product, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
