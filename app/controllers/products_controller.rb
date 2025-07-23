@@ -15,40 +15,27 @@ class ProductsController < ApplicationController
   end
 
   def buy
-    Rails.logger.debug "DEBUG: Entering buy action. Product ID: #{params[:id]}"
+  # ...
+  if @product.in_stock?
+    @order = Order.new(
+      product: @product,
+      quantity: 1,
+      total_price: 1.00,
+      status: 'completed'
+    )
 
-    if @product.nil?
-      Rails.logger.error "CRITICAL ERROR: @product is NIL in buy action even after set_product for ID: #{params[:id]}! This means set_product likely failed or the redirect didn't halt execution."
-      redirect_to products_path, alert: 'Error: Product data missing for purchase. Please try again.' and return
-    end
+    if @order.save
+      @product.decrement!(:inventory_count)
+      Rails.logger.debug "DEBUG: Inventory updated! New count for Product ID #{@product.id}: #{@product.inventory_count}"
 
-    Rails.logger.debug "DEBUG: @product object (after set_product): #{@product.inspect}"
-    Rails.logger.debug "DEBUG: Product inventory_count: #{@product.inventory_count}"
-    Rails.logger.debug "DEBUG: Product in_stock?: #{@product.in_stock?}"
-
-
-    if @product.in_stock?
-      @order = Order.new(
-        product: @product,
-        quantity: 1,
-        total_price: 1.00,
-        status: 'completed'
-      )
-
-      if @order.save
-        @product.decrement!(:inventory_count)
-        Rails.logger.debug "DEBUG: Inventory updated! New count for Product ID #{@product.id}: #{@product.inventory_count}"
-
-        redirect_to @order, notice: 'Purchase successful! Your order has been placed.'
-      else
-        Rails.logger.error "Order save failed for product ID #{params[:id]}: #{@order.errors.full_messages.join(', ')}"
-        redirect_to @product, alert: "Could not complete purchase due to order error: #{@order.errors.full_messages.join(', ')}. Please try again."
-      end
+      redirect_to @order, notice: 'Purchase successful! Your order has been placed.' **and return**
     else
-      Rails.logger.warn "WARN: Attempt to buy out-of-stock product ID: #{params[:id]}"
-      redirect_to @product, alert: 'Sorry, this product is out of stock.'
+      redirect_to @product, alert: "Could not complete purchase due to order error: #{@order.errors.full_messages.join(', ')}. Please try again." **and return**
     end
+  else
+    redirect_to @product, alert: 'Sorry, this product is out of stock.' **and return**
   end
+end
 
   def create
     @product = Product.new(product_params)
