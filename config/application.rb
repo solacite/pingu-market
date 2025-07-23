@@ -4,13 +4,14 @@ require_relative "boot"
 
 require "rails/all"
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module Store
+  puts "DEBUG: === Inside Store module, before Application class ==="
+
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
+    puts "DEBUG: === Inside Application class definition ==="
+
     config.load_defaults 8.0
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
@@ -18,17 +19,19 @@ module Store
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    # TEMPORARY DEBUGGING: Force Cloudinary config here
     Cloudinary.config do |cloudinary_config|
+      puts "DEBUG: === Inside Cloudinary.config block ==="
       cloudinary_config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
       cloudinary_config.api_key    = ENV['CLOUDINARY_API_KEY']
       cloudinary_config.api_secret = ENV['CLOUDINARY_API_SECRET']
       cloudinary_config.secure     = true
       cloudinary_config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
     end
+    puts "DEBUG: === After Cloudinary.config block ==="
 
-    # TEMPORARY DEBUGGING: Check ENV variables and Cloudinary config
+
     config.after_initialize do
+      puts "DEBUG: === Inside config.after_initialize block ==="
       Rails.logger.debug "DEBUG: Application.rb after_initialize hook running."
       Rails.logger.debug "DEBUG: ENV['CLOUDINARY_CLOUD_NAME'] = #{ENV['CLOUDINARY_CLOUD_NAME'].present? ? 'PRESENT' : 'MISSING'}"
       Rails.logger.debug "DEBUG: ENV['CLOUDINARY_API_KEY'] = #{ENV['CLOUDINARY_API_KEY'].present? ? 'PRESENT' : 'MISSING'}"
@@ -37,6 +40,7 @@ module Store
       Rails.logger.debug "DEBUG: Cloudinary.config.cloud_name = #{Cloudinary.config.cloud_name.present? ? 'PRESENT' : 'MISSING'}"
       Rails.logger.debug "DEBUG: Cloudinary.config.api_key = #{Cloudinary.config.api_key.present? ? 'PRESENT' : 'MISSING'}"
       Rails.logger.debug "DEBUG: Cloudinary.config.api_secret = #{Cloudinary.config.api_secret.present? ? 'PRESENT' : 'MISSING'}"
+      puts "DEBUG: === After all debug checks in after_initialize ===" # ADD THIS
     end
 
     # Configuration for the application, engines, and railties goes here.
