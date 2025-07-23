@@ -8,9 +8,9 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-unless User.find_by(email: "admin@gmail.com")
+unless User.find_by(email_address: "admin@gmail.com")
   User.create!(
-    email: "admin@gmail.com",
+    email_address: "admin@gmail.com",
     password: "banana",
     password_confirmation: "banana",
     admin: true

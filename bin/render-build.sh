@@ -6,19 +6,8 @@ chmod +x bin/rails
 
 bundle install
 
-echo "--> Dropping existing database"
-DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bin/rails db:drop
-
-echo "--> Creating new database"
-bin/rails db:create
-
-echo "--> Loading database schema from schema.rb"
-bin/rails db:schema:load
-
-echo "--> Waiting 5 seconds for database changes to propagate..."
-sleep 5
-echo "--> Clearing Rails cache before seeding..."
-bin/rails tmp:clear
+echo "--> Running database migrations"
+bin/rails db:migrate # Use migrate for subsequent deploys
 
 echo "--> Running database seeds"
 bin/rails db:seed
