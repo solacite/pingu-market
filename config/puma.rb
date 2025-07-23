@@ -53,20 +53,16 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render su
 # like Render.
 preload_app!
 
-# The `on_worker_boot` hook is called every time a worker process is booted.
-# It's crucial for re-establishing connections and configurations that might
-# not be inherited correctly after forking, like database connections or Cloudinary settings.
 on_worker_boot do
-  # Reconnect to the database if using ActiveRecord.
-  # This is standard practice when using `preload_app!`.
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
 
-  # --- IMPORTANT: Re-configure Cloudinary for each worker ---
-  # This ensures that each forked worker process has the Cloudinary configuration
-  # properly set, as environment variables might not be fully available or
-  # Cloudinary's global state might not be inherited correctly after forking.
+  puts "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
+  puts "DEBUG: CLOUDINARY_CLOUD_NAME: #{ENV['CLOUDINARY_CLOUD_NAME'].present? ? 'PRESENT' : 'MISSING'}"
+  puts "DEBUG: CLOUDINARY_API_KEY:    #{ENV['CLOUDINARY_API_KEY'].present? ? 'PRESENT' : 'MISSING'}"
+  puts "DEBUG: CLOUDINARY_API_SECRET: #{ENV['CLOUDINARY_API_SECRET'].present? ? 'PRESENT' : 'MISSING'}"
+  puts "DEBUG: CLOUDINARY_URL:        #{ENV['CLOUDINARY_URL'].present? ? 'PRESENT' : 'MISSING'}"
+
   Cloudinary.config do |cloudinary_config|
-    puts "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
     cloudinary_config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
     cloudinary_config.api_key    = ENV['CLOUDINARY_API_KEY']
     cloudinary_config.api_secret = ENV['CLOUDINARY_API_SECRET']
