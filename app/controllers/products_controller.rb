@@ -23,8 +23,6 @@ class ProductsController < ApplicationController
     end
 
     Rails.logger.debug "DEBUG: @product object (after set_product): #{@product.inspect}"
-    Rails.logger.debug "DEBUG: Is user authenticated?: #{authenticated?.inspect}"
-    Rails.logger.debug "DEBUG: current_user: #{current_user.inspect}"
     Rails.logger.debug "DEBUG: Product inventory_count: #{@product.inventory_count}"
     Rails.logger.debug "DEBUG: Product in_stock?: #{@product.in_stock?}"
 
@@ -88,6 +86,6 @@ class ProductsController < ApplicationController
     end
 
     def product_params
-      params.expect(product: [ :name, :description, :featured_image, :inventory_count ])
+      params.require(:product).permit(:name, :description, :featured_image, :inventory_count)
     end
 end
