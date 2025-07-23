@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy ]
+  before_action :set_product, only: %i[ show edit update destroy buy ]
   allow_unauthenticated_access only: %i[ index show buy ]
 
   def index
