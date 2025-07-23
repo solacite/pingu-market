@@ -15,6 +15,14 @@ class ProductsController < ApplicationController
   end
 
   def buy
+    Rails.logger.debug "DEBUG: Entering buy action. Product ID: #{params[:id]}"
+    Rails.logger.debug "DEBUG: @product object: #{@product.inspect}"
+
+    if @product.nil?
+      Rails.logger.error "CRITICAL ERROR: @product is NIL in buy action even after set_product for ID: #{params[:id]}!"
+      redirect_to products_path, alert: 'Error: Product data missing for purchase. Please try again.' and return
+    end
+
     if @product.in_stock?
       @order = current_user.orders.new(
         product: @product,
@@ -26,7 +34,8 @@ class ProductsController < ApplicationController
       if @order.save
         redirect_to @order, notice: 'Purchase successful! Your order has been placed.'
       else
-        redirect_to @product, alert: 'Could not complete purchase. Please try again.'
+        Rails.logger.error "Order save failed for product ID #{params[:id]}: #{@order.errors.full_messages.join(', ')}"
+        redirect_to @product, alert: 'Could not complete purchase due to order error. Please try again.'
       end
     else
       redirect_to @product, alert: 'Sorry, this product is out of stock.'
