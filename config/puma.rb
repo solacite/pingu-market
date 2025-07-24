@@ -51,4 +51,33 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render su
 # Use the `preload_app!` directive to load your application before workers are forked.
 # This results in faster worker boot times and reduced memory consumption on platforms
 # like Render.
-#preload_app!
+preload_app!
+
+on_worker_boot do
+  Rails.logger.info "--- Entering on_worker_boot block ---" # Added for extra clarity
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+
+  # Re-configure Cloudinary for each worker process
+  if ENV['CLOUDINARY_CLOUD_NAME'].present? && ENV['CLOUDINARY_API_KEY'].present? && ENV['CLOUDINARY_API_SECRET'].present?
+    Cloudinary.config do |config|
+      config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
+      config.api_key    = ENV['CLOUDINARY_API_KEY']
+      config.api_secret = ENV['CLOUDINARY_API_SECRET']
+      config.secure     = true
+      config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
+      config.force_canonical_for_private_delivery = true
+    end
+    Rails.logger.info "Cloudinary re-configured successfully in worker boot. Cloud name: '#{Cloudinary.config.cloud_name}'"
+    Rails.logger.info "Worker boot ENV CLOUDINARY_CLOUD_NAME: '#{ENV['CLOUDINARY_CLOUD_NAME']}'"
+    Rails.logger.info "Worker boot ENV CLOUDINARY_API_KEY: '#{ENV['CLOUDINARY_API_KEY']}'"
+    Rails.logger.info "Worker boot ENV CLOUDINARY_API_SECRET: '#{ENV['CLOUDINARY_API_SECRET']}'"
+    Rails.logger.info "Worker boot ENV CLOUDINARY_URL: '#{ENV['CLOUDINARY_URL']}'"
+  else
+    Rails.logger.warn "WARNING: Cloudinary environment variables are NOT fully set in worker boot."
+    Rails.logger.warn "Worker boot ENV CLOUDINARY_CLOUD_NAME: '#{ENV['CLOUDINARY_CLOUD_NAME']}' (present: #{ENV['CLOUDINARY_CLOUD_NAME'].present?})"
+    Rails.logger.warn "Worker boot ENV CLOUDINARY_API_KEY: '#{ENV['CLOUDINARY_API_KEY']}' (present: #{ENV['CLOUDINARY_API_KEY'].present?})"
+    Rails.logger.warn "Worker boot ENV CLOUDINARY_API_SECRET: '#{ENV['CLOUDINARY_API_SECRET']}' (present: #{ENV['CLOUDINARY_API_SECRET'].present?})"
+    Rails.logger.warn "Worker boot ENV CLOUDINARY_URL: '#{ENV['CLOUDINARY_URL']}' (present: #{ENV['CLOUDINARY_URL'].present?})"
+  end
+  Rails.logger.info "--- Exiting on_worker_boot block ---" # Added for extra clarity
+end
