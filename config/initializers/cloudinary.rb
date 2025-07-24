@@ -1,5 +1,5 @@
 if ENV['CLOUDINARY_CLOUD_NAME'].present? && ENV['CLOUDINARY_API_KEY'].present? && ENV['CLOUDINARY_API_SECRET'].present?
-
+  
   Rails.logger.info "Cloudinary raw ENV['CLOUDINARY_URL']: '#{ENV['CLOUDINARY_URL']}'"
 
   Cloudinary.config do |config|
@@ -14,7 +14,7 @@ if ENV['CLOUDINARY_CLOUD_NAME'].present? && ENV['CLOUDINARY_API_KEY'].present? &
   Rails.logger.info "Cloudinary.config.cloud_name: '#{Cloudinary.config.cloud_name}'"
   Rails.logger.info "Cloudinary.config.api_key present: #{Cloudinary.config.api_key.present?}"
   Rails.logger.info "Cloudinary.config.secure: #{Cloudinary.config.secure}"
-  **Rails.logger.info "Cloudinary.config.url: '#{Cloudinary.config.url}'"
+  Rails.logger.info "Cloudinary.config.url: '#{Cloudinary.config.url}'"
 else
   Rails.logger.warn "WARNING: Cloudinary environment variables are not fully set in initializer. Check CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_URL."
   Rails.logger.warn "CLOUDINARY_CLOUD_NAME: '#{ENV['CLOUDINARY_CLOUD_NAME']}'"
