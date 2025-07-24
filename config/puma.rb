@@ -51,4 +51,4 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render su
 # Use the `preload_app!` directive to load your application before workers are forked.
 # This results in faster worker boot times and reduced memory consumption on platforms
 # like Render.
-preload_app!
+#preload_app!
