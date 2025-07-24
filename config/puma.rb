@@ -54,20 +54,28 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render su
 preload_app!
 
 on_worker_boot do
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+  Rails.logger.debug "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
 
-  puts "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
-  puts "DEBUG: CLOUDINARY_CLOUD_NAME: #{ENV['CLOUDINARY_CLOUD_NAME'].present? ? 'PRESENT' : 'MISSING'}"
-  puts "DEBUG: CLOUDINARY_API_KEY:    #{ENV['CLOUDINARY_API_KEY'].present? ? 'PRESENT' : 'MISSING'}"
-  puts "DEBUG: CLOUDINARY_API_SECRET: #{ENV['CLOUDINARY_API_SECRET'].present? ? 'PRESENT' : 'MISSING'}"
-  puts "DEBUG: CLOUDINARY_URL:        #{ENV['CLOUDINARY_URL'].present? ? 'PRESENT' : 'MISSING'}"
+  # Print raw ENV values *before* configuring Cloudinary
+  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_CLOUD_NAME'] (raw): '#{ENV['CLOUDINARY_CLOUD_NAME']}'"
+  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_API_KEY'] (raw):    '#{ENV['CLOUDINARY_API_KEY']}'"
+  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_API_SECRET'] (raw): '#{ENV['CLOUDINARY_API_SECRET']}'"
+  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_URL'] (raw):        '#{ENV['CLOUDINARY_URL']}'"
 
-  Cloudinary.config do |cloudinary_config|
-    cloudinary_config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
-    cloudinary_config.api_key    = ENV['CLOUDINARY_API_KEY']
-    cloudinary_config.api_secret = ENV['CLOUDINARY_API_SECRET']
-    cloudinary_config.secure     = true
-    cloudinary_config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
+  Cloudinary.config do |config|
+    config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
+    config.api_key    = ENV['CLOUDINARY_API_KEY']
+    config.api_secret = ENV['CLOUDINARY_API_SECRET']
+    config.secure     = true
+    config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
   end
-  puts "DEBUG: === Finished re-configuring Cloudinary in on_worker_boot ==="
+
+  # Print configured Cloudinary values *after* configuration
+  Rails.logger.debug "DEBUG: Cloudinary.config.cloud_name: '#{Cloudinary.config.cloud_name}'"
+  Rails.logger.debug "DEBUG: Cloudinary.config.api_key:    '#{Cloudinary.config.api_key.present? ? 'PRESENT' : 'MISSING'}'" # Keep API Key hidden
+  Rails.logger.debug "DEBUG: Cloudinary.config.api_secret: '#{Cloudinary.config.api_secret.present? ? 'PRESENT' : 'MISSING'}'" # Keep API Secret hidden
+  Rails.logger.debug "DEBUG: Cloudinary.config.secure:     #{Cloudinary.config.secure}"
+  Rails.logger.debug "DEBUG: Cloudinary.config.url:        '#{Cloudinary.config.url}'"
+
+  Rails.logger.debug "DEBUG: === Finished re-configuring Cloudinary in on_worker_boot ==="
 end
