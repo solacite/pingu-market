@@ -26,5 +26,18 @@ module Store
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+      if ENV['CLOUDINARY_CLOUD_NAME'].present?
+    Cloudinary.config do |config|
+      config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
+      config.api_key    = ENV['CLOUDINARY_API_KEY']
+      config.api_secret = ENV['CLOUDINARY_API_SECRET']
+      config.secure     = true
+      config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
+    end
+    Rails.logger.debug "DEBUG: Cloudinary configured in application.rb"
+    Rails.logger.debug "DEBUG: Cloudinary.config.cloud_name from application.rb: '#{Cloudinary.config.cloud_name}'"
+  else
+    Rails.logger.debug "DEBUG: CLOUDINARY_CLOUD_NAME NOT PRESENT IN APPLICATION.RB STARTUP"
+  end
   end
 end
