@@ -52,28 +52,3 @@ workers ENV.fetch("WEB_CONCURRENCY") { 2 } # Common default, adjust if Render su
 # This results in faster worker boot times and reduced memory consumption on platforms
 # like Render.
 preload_app!
-
-on_worker_boot do
-  Rails.logger.debug "DEBUG: === Re-configuring Cloudinary in on_worker_boot ==="
-
-  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_CLOUD_NAME'] (raw): '#{ENV['CLOUDINARY_CLOUD_NAME']}'"
-  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_API_KEY'] (raw):    '#{ENV['CLOUDINARY_API_KEY']}'"
-  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_API_SECRET'] (raw): '#{ENV['CLOUDINARY_API_SECRET']}'"
-  Rails.logger.debug "DEBUG: ENV['CLOUDINARY_URL'] (raw):        '#{ENV['CLOUDINARY_URL']}'"
-
-  Cloudinary.config do |config|
-    config.cloud_name = ENV['CLOUDINARY_CLOUD_NAME']
-    config.api_key    = ENV['CLOUDINARY_API_KEY']
-    config.api_secret = ENV['CLOUDINARY_API_SECRET']
-    config.secure     = true
-    config.url        = ENV['CLOUDINARY_URL'] if ENV['CLOUDINARY_URL'].present?
-  end
-
-  Rails.logger.debug "DEBUG: Cloudinary.config.cloud_name: '#{Cloudinary.config.cloud_name}'"
-  Rails.logger.debug "DEBUG: Cloudinary.config.api_key:    '#{Cloudinary.config.api_key.present? ? 'PRESENT' : 'MISSING'}'"
-  Rails.logger.debug "DEBUG: Cloudinary.config.api_secret: '#{Cloudinary.config.api_secret.present? ? 'PRESENT' : 'MISSING'}'"
-  Rails.logger.debug "DEBUG: Cloudinary.config.secure:     #{Cloudinary.config.secure}"
-  Rails.logger.debug "DEBUG: Cloudinary.config.url:        '#{Cloudinary.config.url}'"
-
-  Rails.logger.debug "DEBUG: === Finished re-configuring Cloudinary in on_worker_boot ==="
-end
